@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    users:
+      - name: user1
+        ssh_key: "ssh-rsa AAAAB3Nz... user1@example.com"
+      - name: user2
+        ssh_key: "ssh-rsa AAAAB3Nz... user2@example.com"
+
+  tasks:
+    - name: Create users
+      user:
+        name: "{{ item.name }}"
+        state: present
+        groups: sudo
+        ssh_key: "{{ item.ssh_key }}"
+      loop: "{{ users }}"

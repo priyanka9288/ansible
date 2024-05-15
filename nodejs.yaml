@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  become: yes
+
+  vars:
+    app_dir: /home/vdo/myapp
+    node_version: 14.x
+
+  tasks:
+    - name: Install Node.js
+      import_role:
+        name: geerlingguy.nodejs
+      vars:
+        nodejs_version: "{{ node_version }}"
+
+    - name: Create app directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: Copy application files
+      copy:
+        src: app/
+        dest: "{{ app_dir }}/"
+
+    - name: Install application dependencies
+      npm:
+        path: "{{ app_dir }}"
+        state: latest
+
+    - name: Start application
+      npm:
+        path: "{{ app_dir }}"
+        state: started
+        script: app.js

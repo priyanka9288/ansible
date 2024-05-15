@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Create mount directory
+      file:
+        path: /home/vdo
+        state: directory
+        mode: 0755
+
+    - name: Format EBS volume
+      filesystem:
+        fstype: ext4
+        dev: /dev/xvdf
+
+    - name: Mount EBS volume
+      mount:
+        path: /home/vdo
+        src: /dev/xvdf
+        fstype: ext4
+        state: mounted
+
+    - name: Add entry to /etc/fstab
+      mount:
+        path: /home/vdo
+        src: /dev/xvdf
+        fstype: ext4
+        state: present
